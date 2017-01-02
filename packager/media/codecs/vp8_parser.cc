@@ -7,6 +7,7 @@
 #include "packager/media/codecs/vp8_parser.h"
 
 #include "packager/base/logging.h"
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/media/base/bit_reader.h"
 #include "packager/media/base/rcheck.h"
 
@@ -103,7 +104,7 @@ bool VP8Parser::Parse(const uint8_t* data,
   DCHECK(data);
   DCHECK(vpx_frames);
 
-  BitReader reader(data, data_size);
+  BitReader reader(data, base::checked_cast<off_t>(data_size));
   // The following 3 bytes are read directly from |data|.
   RCHECK(reader.SkipBytes(3));
 

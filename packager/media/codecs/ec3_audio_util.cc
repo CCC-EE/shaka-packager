@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file or at
 // https://developers.google.com/open-source/licenses/bsd
 
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/media/base/bit_reader.h"
 #include "packager/media/base/rcheck.h"
 #include "packager/media/codecs/ec3_audio_util.h"
@@ -75,7 +76,7 @@ bool ExtractEc3Data(const std::vector<uint8_t>& ec3_data,
                     uint8_t* audio_coding_mode,
                     bool* lfe_channel_on,
                     uint16_t* dependent_substreams_layout) {
-  BitReader bit_reader(ec3_data.data(), ec3_data.size());
+  BitReader bit_reader(ec3_data.data(), base::checked_cast<off_t>(ec3_data.size()));
   // Read number of independent substreams and parse the independent substreams.
   uint8_t number_independent_substreams;
   RCHECK(bit_reader.SkipBits(13) &&

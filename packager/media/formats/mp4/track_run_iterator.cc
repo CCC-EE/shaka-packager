@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <limits>
 
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/media/base/buffer_reader.h"
 #include "packager/media/base/fourccs.h"
 #include "packager/media/base/rcheck.h"
@@ -187,7 +188,7 @@ bool TrackRunIterator::Init() {
     int64_t run_start_dts = 0;
 
     uint32_t num_samples = sample_size.sample_count;
-    uint32_t num_chunks = chunk_offset_vector.size();
+    uint32_t num_chunks = base::checked_cast<uint32_t>(chunk_offset_vector.size());
 
     // Check that total number of samples match.
     DCHECK_EQ(num_samples, decoding_time.NumSamples());
@@ -409,7 +410,7 @@ bool TrackRunIterator::Init(const MovieFragment& moof) {
       }
 
       tri.samples.resize(trun.sample_count);
-      for (size_t k = 0; k < trun.sample_count; k++) {
+      for (uint32_t k = 0; k < trun.sample_count; k++) {
         PopulateSampleInfo(*trex, traf.header, trun, k, &tri.samples[k]);
         run_start_dts += tri.samples[k].duration;
       }

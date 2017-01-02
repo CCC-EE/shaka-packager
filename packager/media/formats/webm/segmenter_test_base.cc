@@ -4,6 +4,8 @@
 // license that can be found in the LICENSE file or at
 // https://developers.google.com/open-source/licenses/bsd
 
+#include "packager/base/numerics/safe_conversions.h"
+
 #include "packager/media/formats/webm/segmenter_test_base.h"
 
 #include "packager/media/base/muxer_util.h"
@@ -121,7 +123,7 @@ void SegmentTestBase::ClusterParser::PopulateFromCluster(
   WebMListParser cluster_parser(kWebMIdCluster, this);
   size_t position = 0;
   while (position < size) {
-    int read = cluster_parser.Parse(data + position, size - position);
+    int read = cluster_parser.Parse(data + position, base::checked_cast<int>(size - position));
     ASSERT_LT(0, read);
 
     cluster_parser.Reset();
@@ -136,7 +138,7 @@ void SegmentTestBase::ClusterParser::PopulateFromSegment(
   ASSERT_TRUE(File::ReadFileToString(file_name.c_str(), &file_contents));
 
   const uint8_t* data = reinterpret_cast<const uint8_t*>(file_contents.c_str());
-  const size_t size = file_contents.size();
+  const int size = base::checked_cast<int>(file_contents.size());
   WebMListParser header_parser(kWebMIdEBMLHeader, this);
   int offset = header_parser.Parse(data, size);
   ASSERT_LT(0, offset);
@@ -151,7 +153,7 @@ int SegmentTestBase::ClusterParser::GetFrameCountForCluster(size_t i) const {
 }
 
 int SegmentTestBase::ClusterParser::cluster_count() const {
-  return cluster_sizes_.size();
+  return base::checked_cast<int>(cluster_sizes_.size());
 }
 
 WebMParserClient* SegmentTestBase::ClusterParser::OnListStart(int id) {

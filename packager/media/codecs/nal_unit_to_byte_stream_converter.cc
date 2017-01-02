@@ -9,6 +9,7 @@
 #include <list>
 
 #include "packager/base/logging.h"
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/media/base/bit_reader.h"
 #include "packager/media/base/buffer_reader.h"
 #include "packager/media/base/buffer_writer.h"
@@ -195,7 +196,7 @@ bool NalUnitToByteStreamConverter::ConvertUnitToByteStreamWithSubsamples(
   if (is_key_frame)
     buffer_writer.AppendVector(decoder_configuration_in_byte_stream_);
 
-  int adjustment = buffer_writer.Size();
+  int adjustment = base::checked_cast<int>(buffer_writer.Size());
   size_t subsample_id = 0;
 
   NaluReader nalu_reader(Nalu::kH264, nalu_length_size_, sample, sample_size);
@@ -244,8 +245,8 @@ bool NalUnitToByteStreamConverter::ConvertUnitToByteStreamWithSubsamples(
             // Add this nalu to the adjustment and remove it from clear_bytes.
             DCHECK_LT(old_nalu_size, subsamples->at(subsample_id).clear_bytes);
             subsamples->at(subsample_id).clear_bytes -=
-                static_cast<uint16_t>(old_nalu_size);
-            adjustment += old_nalu_size;
+              base::checked_cast<uint16_t>(old_nalu_size);
+            adjustment += base::checked_cast<int>(old_nalu_size);
           } else {
             // Apply the adjustment on the current subsample, reset the
             // adjustment and move to the next subsample.

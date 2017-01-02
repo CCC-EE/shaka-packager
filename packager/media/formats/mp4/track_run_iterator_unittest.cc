@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <memory>
 #include "packager/base/logging.h"
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/media/formats/mp4/box_definitions.h"
 #include "packager/media/formats/mp4/track_run_iterator.h"
 
@@ -277,7 +278,7 @@ class TrackRunIteratorTest : public testing::Test {
   void SetAscending(std::vector<uint32_t>* vec) {
     vec->resize(10);
     for (size_t i = 0; i < vec->size(); i++)
-      (*vec)[i] = i + 1;
+      (*vec)[i] = base::checked_cast<int>(i + 1);
   }
 };
 

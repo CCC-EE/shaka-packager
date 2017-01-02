@@ -9,6 +9,7 @@
 #include <algorithm>
 
 #include "packager/base/logging.h"
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/media/base/audio_stream_info.h"
 #include "packager/media/base/buffer_writer.h"
 #include "packager/media/base/stream_info.h"
@@ -136,7 +137,7 @@ bool WritePesToFile(const PesPacket& pes,
   first_ts_packet_buffer.AppendBuffer(pes_header_writer);
 
   const int available_payload =
-      kTsPacketMaxPayloadWithPcr - first_ts_packet_buffer.Size();
+      kTsPacketMaxPayloadWithPcr - base::checked_cast<int>( first_ts_packet_buffer.Size() );
   const int bytes_consumed =
       std::min(static_cast<int>(pes.data().size()), available_payload);
   first_ts_packet_buffer.AppendArray(pes.data().data(), bytes_consumed);

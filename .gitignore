@@ -1,4 +1,8 @@
 *.pyc
+*.sln
+*.VC.db
+*.vcxproj*
+*/.vs/*
 *~
 .DS_store
 .cproject
@@ -6,6 +10,7 @@
 .pydevproject
 .repo
 .settings
+.opendb
 /out*
 /packager/base/
 /packager/build/
@@ -29,3 +34,23 @@
 /packager/tools/clang/
 /packager/tools/gyp/
 /packager/tools/valgrind/
+
+#
+# Generated files (GYP_GENERATORS=msvs)
+#
+packager/media/base/widevine_pssh_data_proto.props
+packager/media/base/widevine_pssh_data_proto.targets
+packager/media/base/widevine_pssh_data_proto.xml
+packager/mpd/media_info_proto.props
+packager/mpd/media_info_proto.targets
+packager/mpd/media_info_proto.xml
+packager/third_party/boringssl/boringssl_asm.props
+packager/third_party/boringssl/boringssl_asm.targets
+packager/third_party/boringssl/boringssl_asm.xml
+packager/third_party/yasm/generate_files.props
+packager/third_party/yasm/generate_files.targets
+packager/third_party/yasm/generate_files.xml
+packager/third_party/yasm/yasm.props
+packager/third_party/yasm/yasm.targets
+packager/third_party/yasm/yasm.xml
+packager/packager.VC.VC.opendb

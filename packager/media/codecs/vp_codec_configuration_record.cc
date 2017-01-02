@@ -6,6 +6,7 @@
 
 #include "packager/media/codecs/vp_codec_configuration_record.h"
 
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/base/strings/string_number_conversions.h"
 #include "packager/base/strings/string_util.h"
 #include "packager/media/base/bit_reader.h"
@@ -87,7 +88,7 @@ VPCodecConfigurationRecord::VPCodecConfigurationRecord(
 VPCodecConfigurationRecord::~VPCodecConfigurationRecord(){};
 
 bool VPCodecConfigurationRecord::ParseMP4(const std::vector<uint8_t>& data) {
-  BitReader reader(data.data(), data.size());
+  BitReader reader(data.data(), base::checked_cast<off_t>(data.size()));
   profile_is_set_ = true;
   level_is_set_ = true;
   bit_depth_is_set_ = true;

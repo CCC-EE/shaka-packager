@@ -5,6 +5,7 @@
 #include "packager/media/formats/webm/tracks_builder.h"
 
 #include "packager/base/logging.h"
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/media/formats/webm/webm_constants.h"
 
 namespace shaka {
@@ -63,7 +64,7 @@ static int DoubleElementSize(int element_id) {
 static int StringElementSize(int element_id, const std::string& value) {
  return GetUIntSize(element_id) +
         GetUIntMkvSize(value.length()) +
-        value.length();
+        base::checked_cast<int>(value.length());
 }
 
 static void SerializeInt(uint8_t** buf_ptr,
@@ -196,7 +197,7 @@ std::vector<uint8_t> TracksBuilder::Finish() {
   buffer.resize(GetTracksSize());
 
   // Populate the storage with a tracks header
-  WriteTracks(&buffer[0], buffer.size());
+  WriteTracks(&buffer[0], base::checked_cast<int>(buffer.size()));
 
   return buffer;
 }

@@ -60,7 +60,7 @@ TEST_F(WebMTracksParserTest, SubtitleNoNameNoLang) {
   tb.AddTextTrack(1, 1, kWebMCodecSubtitles, "", "");
 
   const std::vector<uint8_t> buf = tb.Finish();
-  VerifyTextTrackInfo(&buf[0], buf.size(), kTextSubtitles, "", "");
+  VerifyTextTrackInfo(&buf[0], base::checked_cast<int>(buf.size()), kTextSubtitles, "", "");
 }
 
 TEST_F(WebMTracksParserTest, SubtitleYesNameNoLang) {
@@ -70,7 +70,7 @@ TEST_F(WebMTracksParserTest, SubtitleYesNameNoLang) {
   tb.AddTextTrack(1, 1, kWebMCodecSubtitles, "Spock", "");
 
   const std::vector<uint8_t> buf = tb.Finish();
-  VerifyTextTrackInfo(&buf[0], buf.size(), kTextSubtitles, "Spock", "");
+  VerifyTextTrackInfo(&buf[0], base::checked_cast<int>(buf.size()), kTextSubtitles, "Spock", "");
 }
 
 TEST_F(WebMTracksParserTest, SubtitleNoNameYesLang) {
@@ -80,7 +80,7 @@ TEST_F(WebMTracksParserTest, SubtitleNoNameYesLang) {
   tb.AddTextTrack(1, 1, kWebMCodecSubtitles, "", "eng");
 
   const std::vector<uint8_t> buf = tb.Finish();
-  VerifyTextTrackInfo(&buf[0], buf.size(), kTextSubtitles, "", "eng");
+  VerifyTextTrackInfo(&buf[0], base::checked_cast<int>(buf.size()), kTextSubtitles, "", "eng");
 }
 
 TEST_F(WebMTracksParserTest, SubtitleYesNameYesLang) {
@@ -90,7 +90,7 @@ TEST_F(WebMTracksParserTest, SubtitleYesNameYesLang) {
   tb.AddTextTrack(1, 1, kWebMCodecSubtitles, "Picard", "fre");
 
   const std::vector<uint8_t> buf = tb.Finish();
-  VerifyTextTrackInfo(&buf[0], buf.size(), kTextSubtitles, "Picard", "fre");
+  VerifyTextTrackInfo(&buf[0], base::checked_cast<int>(buf.size()), kTextSubtitles, "Picard", "fre");
 }
 
 TEST_F(WebMTracksParserTest, IgnoringTextTracks) {
@@ -103,7 +103,7 @@ TEST_F(WebMTracksParserTest, IgnoringTextTracks) {
   const std::vector<uint8_t> buf = tb.Finish();
   std::unique_ptr<WebMTracksParser> parser(new WebMTracksParser(true));
 
-  int result = parser->Parse(&buf[0], buf.size());
+  int result = parser->Parse(&buf[0], base::checked_cast<int>(buf.size()));
   EXPECT_GT(result, 0);
   EXPECT_EQ(result, static_cast<int>(buf.size()));
 
@@ -116,7 +116,7 @@ TEST_F(WebMTracksParserTest, IgnoringTextTracks) {
   // Test again w/o ignoring the test tracks.
   parser.reset(new WebMTracksParser(false));
 
-  result = parser->Parse(&buf[0], buf.size());
+  result = parser->Parse(&buf[0], base::checked_cast<int>(buf.size()));
   EXPECT_GT(result, 0);
 
   EXPECT_EQ(parser->ignored_tracks().size(), 0u);
@@ -135,7 +135,7 @@ TEST_F(WebMTracksParserTest, AudioVideoDefaultDurationUnset) {
   const std::vector<uint8_t> buf = tb.Finish();
 
   std::unique_ptr<WebMTracksParser> parser(new WebMTracksParser(true));
-  int result = parser->Parse(&buf[0], buf.size());
+  int result = parser->Parse(&buf[0], base::checked_cast<int>(buf.size()));
   EXPECT_LE(0, result);
   EXPECT_EQ(static_cast<int>(buf.size()), result);
 
@@ -166,7 +166,7 @@ TEST_F(WebMTracksParserTest, AudioVideoDefaultDurationSet) {
   const std::vector<uint8_t> buf = tb.Finish();
 
   std::unique_ptr<WebMTracksParser> parser(new WebMTracksParser(true));
-  int result = parser->Parse(&buf[0], buf.size());
+  int result = parser->Parse(&buf[0], base::checked_cast<int>(buf.size()));
   EXPECT_LE(0, result);
   EXPECT_EQ(static_cast<int>(buf.size()), result);
 
@@ -187,7 +187,7 @@ TEST_F(WebMTracksParserTest, InvalidZeroDefaultDurationSet) {
 
   std::unique_ptr<WebMTracksParser> parser(new WebMTracksParser(true));
 
-  EXPECT_EQ(-1, parser->Parse(&buf[0], buf.size()));
+  EXPECT_EQ(-1, parser->Parse(&buf[0], base::checked_cast<int>(buf.size())));
 }
 
 TEST_F(WebMTracksParserTest, HighTrackUID) {
@@ -198,7 +198,7 @@ TEST_F(WebMTracksParserTest, HighTrackUID) {
   const std::vector<uint8_t> buf = tb.Finish();
 
   std::unique_ptr<WebMTracksParser> parser(new WebMTracksParser(true));
-  EXPECT_GT(parser->Parse(&buf[0], buf.size()),0);
+  EXPECT_GT(parser->Parse(&buf[0], base::checked_cast<int>(buf.size())),0);
 }
 
 }  // namespace media

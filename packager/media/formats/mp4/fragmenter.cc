@@ -4,6 +4,8 @@
 // license that can be found in the LICENSE file or at
 // https://developers.google.com/open-source/licenses/bsd
 
+#include "packager/base/numerics/safe_conversions.h"
+
 #include "packager/media/formats/mp4/fragmenter.h"
 
 #include <limits>
@@ -60,7 +62,7 @@ Status Fragmenter::AddSample(scoped_refptr<MediaSample> sample) {
     LOG(WARNING) << "MP4 samples do not support side data. Side data ignored.";
 
   // Fill in sample parameters. It will be optimized later.
-  traf_->runs[0].sample_sizes.push_back(sample->data_size());
+  traf_->runs[0].sample_sizes.push_back(base::checked_cast<uint32_t>(sample->data_size()));
   traf_->runs[0].sample_durations.push_back(sample->duration());
   traf_->runs[0].sample_flags.push_back(
       sample->is_key_frame() ? 0 : TrackFragmentHeader::kNonKeySampleMask);
@@ -109,7 +111,7 @@ Status Fragmenter::InitializeFragment(int64_t first_sample_dts) {
 
 void Fragmenter::FinalizeFragment() {
   // Optimize trun box.
-  traf_->runs[0].sample_count = traf_->runs[0].sample_sizes.size();
+  traf_->runs[0].sample_count = base::checked_cast<uint32_t>(traf_->runs[0].sample_sizes.size());
   if (OptimizeSampleEntries(&traf_->runs[0].sample_durations,
                             &traf_->header.default_sample_duration)) {
     traf_->header.flags |=

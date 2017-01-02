@@ -194,7 +194,7 @@ void EsParserH264Test::ProcessPesPackets(
     }
 
     ASSERT_TRUE(
-        es_parser.Parse(&stream_[cur_pes_offset], cur_pes_size, pts, dts));
+        es_parser.Parse(&stream_[cur_pes_offset], base::checked_cast<int>(cur_pes_size), pts, dts));
   }
   es_parser.Flush();
 }

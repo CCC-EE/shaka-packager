@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include "packager/base/logging.h"
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/media/base/bit_reader.h"
 #include "packager/media/base/rcheck.h"
 
@@ -40,7 +41,7 @@ bool AACAudioSpecificConfig::Parse(const std::vector<uint8_t>& data) {
   if (data.empty())
     return false;
 
-  BitReader reader(&data[0], data.size());
+  BitReader reader(&data[0], base::checked_cast<off_t>(data.size()));
   uint8_t extension_type = 0;
   uint8_t extension_frequency_index = 0xff;
 

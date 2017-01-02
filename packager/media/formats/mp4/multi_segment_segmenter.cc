@@ -8,6 +8,7 @@
 
 #include <algorithm>
 
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/base/strings/string_number_conversions.h"
 #include "packager/base/strings/string_util.h"
 #include "packager/media/base/buffer_writer.h"
@@ -85,7 +86,7 @@ Status MultiSegmentSegmenter::DoFinalizeSegment() {
   // sidx() contains pre-generated segment references with one reference per
   // fragment. Calculate |num_fragments_per_subsegment| and combine
   // pre-generated references into final subsegment references.
-  uint32_t num_fragments = sidx()->references.size();
+  uint32_t num_fragments = base::checked_cast<uint32_t>(sidx()->references.size());
   uint32_t num_fragments_per_subsegment =
       (num_fragments - 1) / options().num_subsegments_per_sidx + 1;
   if (num_fragments_per_subsegment <= 1)

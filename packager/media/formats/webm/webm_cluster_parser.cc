@@ -363,7 +363,7 @@ bool WebMClusterParser::OnBlock(bool is_simple_block,
         !WebMCreateDecryptConfig(
              data, size,
              reinterpret_cast<const uint8_t*>(encryption_key_id.data()),
-             encryption_key_id.size(),
+             base::checked_cast<uint32_t>(encryption_key_id.size()),
              &decrypt_config, &data_offset)) {
       return false;
     }

@@ -4,6 +4,8 @@
 // license that can be found in the LICENSE file or at
 // https://developers.google.com/open-source/licenses/bsd
 
+#include "packager/base/numerics/safe_conversions.h"
+
 #include "packager/media/formats/mp4/encrypting_fragmenter.h"
 
 #include <limits>
@@ -179,7 +181,7 @@ void EncryptingFragmenter::FinalizeFragmentForEncryption() {
 
   // Optimize saiz box.
   SampleAuxiliaryInformationSize& saiz = traf()->auxiliary_size;
-  saiz.sample_count = traf()->runs[0].sample_sizes.size();
+  saiz.sample_count = base::checked_cast<uint32_t>(traf()->runs[0].sample_sizes.size());
   if (!saiz.sample_info_sizes.empty()) {
     if (!OptimizeSampleEntries(&saiz.sample_info_sizes,
                                &saiz.default_sample_info_size)) {
@@ -269,7 +271,7 @@ Status EncryptingFragmenter::EncryptSample(scoped_refptr<MediaSample> sample) {
         subsample.clear_bytes =
             static_cast<uint16_t>(frame.uncompressed_header_size);
         subsample.cipher_bytes =
-            frame.frame_size - frame.uncompressed_header_size;
+          base::checked_cast<uint32_t>(frame.frame_size - frame.uncompressed_header_size);
 
         // "VP Codec ISO Media File Format Binding" document requires that the
         // encrypted bytes of each frame within the superframe must be block
@@ -366,7 +368,7 @@ Status EncryptingFragmenter::EncryptSample(scoped_refptr<MediaSample> sample) {
   } else {
     DCHECK_LE(crypt_byte_block(), 1u);
     DCHECK_EQ(skip_byte_block(), 0u);
-    EncryptBytes(data, sample->data_size());
+    EncryptBytes(data, base::checked_cast<uint32_t>(sample->data_size()));
   }
 
   traf()->sample_encryption.sample_encryption_entries.push_back(

@@ -11,6 +11,7 @@
 #include "packager/base/callback_helpers.h"
 #include "packager/base/logging.h"
 #include "packager/base/memory/ref_counted.h"
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/base/strings/string_number_conversions.h"
 #include "packager/media/base/audio_stream_info.h"
 #include "packager/media/base/buffer_reader.h"
@@ -269,7 +270,7 @@ bool MP4MediaParser::ParseBox(bool* err) {
     VLOG(2) << "Skipping top-level box: " << FourCCToString(reader->type());
   }
 
-  queue_.Pop(reader->size());
+  queue_.Pop(base::checked_cast<int>(reader->size()));
   return !(*err);
 }
 

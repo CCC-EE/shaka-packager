@@ -7,6 +7,7 @@
 #include "packager/media/formats/mp2t/ts_packet_writer_util.h"
 
 #include "packager/base/logging.h"
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/media/base/buffer_writer.h"
 #include "packager/media/formats/mp2t/continuity_counter.h"
 
@@ -77,7 +78,7 @@ void WriteAdaptationField(bool has_pcr,
   int adaptation_field_length =
       kAdaptationFieldHeaderSize + (has_pcr ? kPcrFieldsSize : 0);
   if (remaining_data_size < kTsPacketMaximumPayloadSize) {
-    const int current_ts_size = kTsPacketHeaderSize + remaining_data_size +
+    const int current_ts_size = kTsPacketHeaderSize + base::checked_cast<int>(remaining_data_size) +
                                 adaptation_field_length +
                                 kAdaptationFieldLengthSize;
     if (current_ts_size < kTsPacketSize) {
@@ -145,7 +146,7 @@ void WritePayloadToBufferWriter(const uint8_t* payload,
       const size_t bytes_for_adaptation_field = writer->Size() - before;
 
       const int write_bytes =
-          kTsPacketMaximumPayloadSize - bytes_for_adaptation_field;
+          kTsPacketMaximumPayloadSize - base::checked_cast<int>(bytes_for_adaptation_field);
       writer->AppendArray(payload + payload_bytes_written, write_bytes);
       payload_bytes_written += write_bytes;
     } else {

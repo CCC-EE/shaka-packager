@@ -8,6 +8,7 @@
 #include <sstream>
 #include <vector>
 
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/base/strings/string_number_conversions.h"
 #include "packager/media/base/aes_decryptor.h"
 #include "packager/media/base/audio_stream_info.h"
@@ -391,7 +392,7 @@ bool WvmMediaParser::Parse(const uint8_t* buf, int size) {
         }
         if (num_bytes > 0) {
           pes_packet_bytes_ -= num_bytes;
-          prev_size = psm_data_.size();
+          prev_size = base::checked_cast<uint32_t>(psm_data_.size());
           psm_data_.resize(prev_size + num_bytes);
           memcpy(&psm_data_[prev_size], read_ptr, num_bytes);
         }
@@ -405,7 +406,7 @@ bool WvmMediaParser::Parse(const uint8_t* buf, int size) {
         }
         if (num_bytes > 0) {
           pes_packet_bytes_ -= num_bytes;
-          prev_size = ecm_.size();
+          prev_size = base::checked_cast<uint32_t>(ecm_.size());
           ecm_.resize(prev_size + num_bytes);
           memcpy(&ecm_[prev_size], read_ptr, num_bytes);
         }
@@ -424,7 +425,7 @@ bool WvmMediaParser::Parse(const uint8_t* buf, int size) {
         }
         if (num_bytes > 0) {
           pes_packet_bytes_ -= num_bytes;
-          prev_size = index_data_.size();
+          prev_size = base::checked_cast<uint32_t>(index_data_.size());
           index_data_.resize(prev_size + num_bytes);
           memcpy(&index_data_[prev_size], read_ptr, num_bytes);
         }
@@ -797,7 +798,7 @@ bool WvmMediaParser::DemuxNextPes(bool is_program_end) {
     StartMediaSampleDemux();
   }
 
-  crypto_unit_start_pos_ = sample_data_.size();
+  crypto_unit_start_pos_ = base::checked_cast<uint32_t>(sample_data_.size());
   return true;
 }
 
@@ -895,8 +896,8 @@ bool WvmMediaParser::Output(bool output_encrypted_sample) {
     } else if ((prev_pes_stream_id_ & kPesStreamIdAudioMask) ==
         kPesStreamIdAudio) {
       // Set data on the audio stream.
-      int frame_size = mp2t::AdtsHeader::GetAdtsFrameSize(sample_data_.data(),
-                                                          kAdtsHeaderMinSize);
+      int frame_size = base::checked_cast<int>(mp2t::AdtsHeader::GetAdtsFrameSize(sample_data_.data(),
+        kAdtsHeaderMinSize));
       mp2t::AdtsHeader adts_header;
       const uint8_t* frame_ptr = sample_data_.data();
       if (!adts_header.Parse(frame_ptr, frame_size)) {

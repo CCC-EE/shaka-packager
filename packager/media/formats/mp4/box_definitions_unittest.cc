@@ -9,6 +9,8 @@
 #include <limits>
 #include <memory>
 
+#include "packager/base/numerics/safe_conversions.h"
+
 #include "packager/media/base/buffer_writer.h"
 #include "packager/media/base/protection_system_specific_info.h"
 #include "packager/media/formats/mp4/box_definitions.h"
@@ -44,7 +46,7 @@ class BoxDefinitionsTestGeneral : public testing::Test {
     // Create a fake skip box contains the buffer and Write it.
     BufferWriter buffer;
     buffer.Swap(buffer_.get());
-    uint32_t skip_box_size = buffer.Size() + kBoxSize;
+    uint32_t skip_box_size = base::checked_cast<uint32_t>(buffer.Size() + kBoxSize);
     buffer_->AppendInt(skip_box_size);
     buffer_->AppendInt(static_cast<uint32_t>(FOURCC_skip));
     buffer_->AppendBuffer(buffer);

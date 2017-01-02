@@ -4,6 +4,8 @@
 // license that can be found in the LICENSE file or at
 // https://developers.google.com/open-source/licenses/bsd
 
+#include "packager/base/numerics/safe_conversions.h"
+
 #include "packager/media/formats/webm/encryptor.h"
 
 #include <gflags/gflags.h>
@@ -119,9 +121,9 @@ Status Encryptor::EncryptFrame(scoped_refptr<MediaSample> sample,
       BufferWriter offsets_buffer(kWebMPartitionOffsetSize * num_partitions);
       for (const auto& vpx_frame : vpx_frames) {
         uint32_t encrypted_size =
-            vpx_frame.frame_size - vpx_frame.uncompressed_header_size;
+          base::checked_cast<uint32_t>(vpx_frame.frame_size - vpx_frame.uncompressed_header_size);
         encrypted_size -= encrypted_size % kAesBlockSize;
-        uint32_t clear_size = vpx_frame.frame_size - encrypted_size;
+        uint32_t clear_size = base::checked_cast<uint32_t>(vpx_frame.frame_size) - encrypted_size;
         partition_offset += clear_size;
         offsets_buffer.AppendInt(partition_offset);
         if (encrypted_size > 0) {

@@ -10,6 +10,7 @@
 #include <list>
 
 #include "packager/base/logging.h"
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/base/strings/string_number_conversions.h"
 #include "packager/media/base/audio_timestamp_helper.h"
 #include "packager/media/base/bit_reader.h"
@@ -64,7 +65,7 @@ static bool LookForSyncWord(const uint8_t* raw_es,
       continue;
 
     int frame_size =
-        mp2t::AdtsHeader::GetAdtsFrameSize(cur_buf, kAdtsHeaderMinSize);
+      base::checked_cast<int>(mp2t::AdtsHeader::GetAdtsFrameSize(cur_buf, kAdtsHeaderMinSize));
     if (frame_size < kAdtsHeaderMinSize) {
       // Too short to be an ADTS frame.
       continue;

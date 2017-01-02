@@ -4,6 +4,8 @@
 // license that can be found in the LICENSE file or at
 // https://developers.google.com/open-source/licenses/bsd
 
+#include "packager/base/numerics/safe_conversions.h"
+
 #include "packager/media/formats/mp2t/adts_header.h"
 
 #include "packager/media/base/bit_reader.h"
@@ -41,7 +43,7 @@ bool AdtsHeader::Parse(const uint8_t* adts_frame, size_t adts_frame_size) {
 
   valid_config_ = false;
 
-  BitReader frame(adts_frame, adts_frame_size);
+  BitReader frame(adts_frame, base::checked_cast<off_t>(adts_frame_size));
   // Verify frame starts with sync bits (0xfff).
   uint32_t sync;
   RCHECK(frame.ReadBits(12, &sync));

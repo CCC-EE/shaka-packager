@@ -9,6 +9,7 @@
 #include <algorithm>
 
 #include "packager/base/logging.h"
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/media/base/buffer_writer.h"
 #include "packager/media/base/fourccs.h"
 #include "packager/media/codecs/aac_audio_specific_config.h"
@@ -312,7 +313,7 @@ void WritePmtWithParameters(uint8_t stream_type,
   // Don't include the pointer field.
   const uint32_t crc = Crc32Mpeg2(pmt.Buffer() + 1, pmt.Size() - 1);
   pmt.AppendInt(crc);
-  WritePmtToBuffer(pmt.Buffer(), pmt.Size(), continuity_counter, output);
+  WritePmtToBuffer(pmt.Buffer(), base::checked_cast<int>(pmt.Size()), continuity_counter, output);
 }
 
 }  // namespace

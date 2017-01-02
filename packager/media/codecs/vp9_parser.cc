@@ -7,6 +7,7 @@
 #include "packager/media/codecs/vp9_parser.h"
 
 #include "packager/base/logging.h"
+#include "packager/base/numerics/safe_conversions.h"
 #include "packager/media/base/bit_reader.h"
 #include "packager/media/base/rcheck.h"
 
@@ -424,7 +425,7 @@ bool VP9Parser::Parse(const uint8_t* data,
 
   for (auto& vpx_frame : *vpx_frames) {
     VLOG(4) << "process frame with size " << vpx_frame.frame_size;
-    BitReader reader(data, vpx_frame.frame_size);
+    BitReader reader(data, base::checked_cast<off_t>(vpx_frame.frame_size));
     uint8_t frame_marker;
     RCHECK(reader.ReadBits(2, &frame_marker));
     RCHECK(frame_marker == VP9_FRAME_MARKER);
@@ -533,7 +534,7 @@ bool VP9Parser::Parse(const uint8_t* data,
 }
 
 bool VP9Parser::IsKeyframe(const uint8_t* data, size_t data_size) {
-  BitReader reader(data, data_size);
+  BitReader reader(data, base::checked_cast<off_t>(data_size));
   uint8_t frame_marker;
   RCHECK(reader.ReadBits(2, &frame_marker));
   RCHECK(frame_marker == VP9_FRAME_MARKER);

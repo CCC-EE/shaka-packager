@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#include "packager/base/numerics/safe_conversions.h"
+
 #include "packager/media/codecs/es_descriptor.h"
 
 #include "packager/media/base/bit_reader.h"
@@ -71,7 +73,7 @@ ESDescriptor::ESDescriptor()
 ESDescriptor::~ESDescriptor() {}
 
 bool ESDescriptor::Parse(const std::vector<uint8_t>& data) {
-  BitReader reader(&data[0], data.size());
+  BitReader reader(&data[0], base::checked_cast<off_t>(data.size()));
   uint8_t tag;
   uint32_t size;
   uint8_t stream_dependency_flag;
